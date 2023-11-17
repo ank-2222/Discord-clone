@@ -1,0 +1,95 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url = env("POSTGRES_PRISMA_URL") // uses connection pooling
+  directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
+  relationMode = "prisma"
+}
+
+
+model Profile {
+  id String @id @default(uuid())
+  userId String @unique
+  name String
+  imageUrl String @db.Text
+  email String @db.Text
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  servers Server[]
+  members Member[]
+  channels Channel[]
+}
+
+model Server {
+  id String @id @default(uuid())
+  name String
+ inviteCode String @db.Text
+  imageUrl String @db.Text
+
+  profileId String 
+  profile Profile @relation(fields: [profileId], references: [id],onDelete: Cascade)
+
+  members Member[]
+  channels Channel[]
+
+  @@index([profileId])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+
+enum MemberRole {
+  ADMIN
+  MODERATOR
+  GUEST
+}
+
+model Member {
+  id String @id @default(uuid())
+  role MemberRole @default(GUEST)
+  profileId String 
+  profile Profile @relation(fields: [profileId], references: [id],onDelete: Cascade)
+  serverId String
+  server Server @relation(fields: [serverId], references: [id],onDelete: Cascade)
+
+  @@index([profileId])
+  @@index([serverId])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum ChannelType {
+  TEXT
+  AUDIO
+  VIDEO
+}
+
+model Channel {
+  id String @id @default(uuid())
+  name String 
+  type ChannelType @default(TEXT)
+
+  profileId String
+  profile Profile @relation(fields: [profileId], references: [id],onDelete: Cascade)
+
+
+  serverId String
+  server Server @relation(fields: [serverId], references: [id],onDelete: Cascade)
+
+  @@index([profileId])
+  @@index([serverId])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt 
+}
+
