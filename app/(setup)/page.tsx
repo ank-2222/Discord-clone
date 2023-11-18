@@ -4,7 +4,6 @@ import { db } from "@/lib/db";
 
 import { redirect } from "next/navigation";
 import { InitialModal } from "@/components/modals/initial-modal";
-import { UserButton } from "@clerk/nextjs";
 const SetupPage =async () => {
    const profile = await initialProfile();
 

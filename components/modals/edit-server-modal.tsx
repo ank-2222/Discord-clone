@@ -22,13 +22,14 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { FileUpload } from "@/components/file-upload";
 
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useState } from "react";
+import { FileUpload } from "@/components/file-upload";
 import { useRouter } from "next/navigation";
+import { useModal } from "@/hooks/use-modal-store";
+import { useEffect } from "react";
 
 const formSchema = z.object({
   name: z.string().min(1, { message: "Please enter a server name" }),
@@ -37,13 +38,14 @@ const formSchema = z.object({
   }),
 });
 
-export const InitialModal = () => {
-  const [isMounted, setIsMounted] = useState(false);
-  const router = useRouter();
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
+export const EditServerModal = () => {
 
+    const {isOpen,onClose,type,data} =useModal();
+
+  const router = useRouter();
+ 
+    const {server}=data;
+  const isModalOpen = isOpen && type === "editServer";
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -52,14 +54,21 @@ export const InitialModal = () => {
     },
   });
 
+  useEffect(()=>{
+    if(server){
+        form.setValue("name",server.name);
+        form.setValue("imageUrl",server.imageUrl);
+    }
+  },[server,form])
+
   const isLoading = form.formState.isSubmitting;
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      await axios.post("/api/servers", values);
+      await axios.patch(`/api/servers/${server?.id}`, values);
       form.reset();
       router.refresh();
-      window.location.reload();
+      onClose();
       
     } catch (error) {
       console.log(error);
@@ -68,12 +77,14 @@ export const InitialModal = () => {
 
   };
 
-  if (!isMounted) {
-    return null;
+  const handleClose = () => {
+    form.reset();
+    onClose();
   }
+ 
   return (
     <div>
-      <Dialog  open>
+      <Dialog open={isModalOpen} onOpenChange={handleClose} >
         <DialogContent className="bg-white text-black p-0 overflow-hidden ">
           <DialogHeader className="bg-white text-black p-0 overflow-hidden ">
             <DialogTitle className="bg-white text-black p-0 overflow-hidden ">
@@ -127,7 +138,7 @@ export const InitialModal = () => {
               </div>
               <DialogFooter className="p-4">
                 <Button type="submit" variant="primary" disabled={isLoading} className="" >
-                  Create Server
+                  Save
                 </Button>
               </DialogFooter>
             </form>
