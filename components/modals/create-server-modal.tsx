@@ -38,11 +38,9 @@ const formSchema = z.object({
 });
 
 export const CreateServerModal = () => {
-
-    const {isOpen,onClose,type} =useModal();
+  const { isOpen, onClose, type } = useModal();
 
   const router = useRouter();
- 
 
   const isModalOpen = isOpen && type === "createServer";
   const form = useForm({
@@ -61,22 +59,19 @@ export const CreateServerModal = () => {
       form.reset();
       router.refresh();
       onClose();
-      
     } catch (error) {
       console.log(error);
     }
-
-
   };
 
   const handleClose = () => {
     form.reset();
     onClose();
-  }
- 
+  };
+
   return (
     <div>
-      <Dialog open={isModalOpen} onOpenChange={handleClose} >
+      <Dialog open={isModalOpen} onOpenChange={handleClose}>
         <DialogContent className="bg-white text-black p-0 overflow-hidden ">
           <DialogHeader className="bg-white text-black p-0 overflow-hidden ">
             <DialogTitle className="bg-white text-black p-0 overflow-hidden ">
@@ -88,34 +83,33 @@ export const CreateServerModal = () => {
           </DialogHeader>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)}>
-                <div>
-
-                    <FormField
-                    control={form.control}
-                    name ="imageUrl"
-                    render ={({field})=>(
-                        <FormItem>
-                            <FormControl>
-                                <FileUpload
-                                endpoint="serverImage"
-                                value ={field.value}
-                                onChange={field.onChange}
-                                />
-                            </FormControl>
-                        </FormItem>
-                    )}
-
-                    />
-
-                </div>
+              <div>
+                <FormField
+                  control={form.control}
+                  name="imageUrl"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <FileUpload
+                          endpoint="serverImage"
+                          value={field.value}
+                          onChange={field.onChange}
+                        />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+              </div>
               <div className="px-4">
                 <FormField
                   control={form.control}
                   name="name"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="uppercase  font-bold">Server name</FormLabel>
-                      <FormControl >
+                      <FormLabel className="uppercase  font-bold">
+                        Server name
+                      </FormLabel>
+                      <FormControl>
                         <Input
                           disabled={isLoading}
                           className=" bg-zinc-300/50 text-black   border-none rounded-md w-full h-10 focus-visible:ring-0 focus-visible:ring-offset-0 "
@@ -129,7 +123,12 @@ export const CreateServerModal = () => {
                 />
               </div>
               <DialogFooter className="p-4">
-                <Button type="submit" variant="primary" disabled={isLoading} className="" >
+                <Button
+                  type="submit"
+                  variant="primary"
+                  disabled={isLoading}
+                  className=""
+                >
                   Create Server
                 </Button>
               </DialogFooter>

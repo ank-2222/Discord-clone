@@ -1,7 +1,11 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
- 
+html,
+body,
+:root {
+  height: 100%;
+}
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -74,3 +78,12 @@
     @apply bg-background text-foreground;
   }
 }
+@layer components {
+  .navigation-sidebar {
+    @apply hidden md:flex h-full w-[72px] z-30 flex-col fixed inset-y-0;
+  }
+  .server-sidebar {
+    @apply hidden md:flex h-full  w-60 z-20 flex-col fixed inset-y-0;
+  }
+}
+@import "~@uploadthing/react/styles.css";
