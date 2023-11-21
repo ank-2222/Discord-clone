@@ -1,7 +1,7 @@
 "use client"
 
 import { UploadDropzone } from "@/lib/uploadthing";
-import "@uploadthing/react/styles.css";
+
 import Image from "next/image";
 interface FileUploadProps{
     onChange:(url?:string)=>void;
